@@ -1,0 +1,45 @@
+﻿<div style="max-width:600px; margin:24px auto; display:flex; gap: 24px;">
+
+    <div>
+        @*
+        IgbCombo の ItemTemplateScrit に、wwwroot/igb-combo-singleselect-template.js で
+        登録してあるスクリプトの名前を指定し、コンボボックスのドロップダウンリストに表示する
+        アイテム要素の構築をカスタマイズします。
+        このカスタマイズによって、アイテム要素のマウスクリックイベントを捕捉し、もしも選択済みのアイテム
+        であった場合はクリック処理をキャンセルすることで、選択済みのアイテムをクリックしても選択されたままを実現します。
+        *@
+        <IgbCombo Data="_items"
+                  ValueKey="@nameof(ComboItem.Id)"
+                  DisplayKey="@nameof(ComboItem.Name)"
+                  SingleSelect="true"
+                  @bind-Value="_selectedValues"
+                  ItemTemplateScript="comboItemTemplate">
+        </IgbCombo>
+    </div>
+
+    <div>
+        <p style="font-weight:bold; border-bottom: solid 2px #666;">
+            Selected Values
+        </p>
+        
+        @foreach (var value in _selectedValues)
+        {
+            <p>@value</p>
+        }
+    </div>
+</div>
+
+@code
+{
+    private record ComboItem(int Id, string Name);
+
+    private List<ComboItem> _items = new()
+    {
+        new(1, "New York"),
+        new(2, "Tokyo"),
+        new(3, "Bangkok"),
+        new(4, "Paris"),
+    };
+
+    private object[] _selectedValues = new object[0];
+}
