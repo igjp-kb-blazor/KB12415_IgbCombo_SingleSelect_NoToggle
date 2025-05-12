@@ -1,41 +1,41 @@
-// ���� JavaScript �t�@�C���́A�t�H�[���o�b�N�y�[�W (wwwroot/index.html �Ȃ�) ��
-// script �^�O�œǂݍ���ł����܂��B
+// この JavaScript ファイルは、フォールバックページ (wwwroot/index.html など) で
+// script タグで読み込んでおきます。
 
 (() => {
 
-    // �A�C�e���e���v���[�g�ɂ���Ď��O�ō\�z�����R���{�{�b�N�X�A�C�e���̃}�X�N�v�f�ɑ΂���N���b�N�C�x���g���������܂��B
+    // アイテムテンプレートによって自前で構築したコンボボックスアイテムのマスク要素に対するクリックイベントを処理します。
     const comboItemClickHandler = (event) => {
 
-        // ���I���̃A�C�e���ł���΁A����ȏ�A�Ƃ��ɉ�����������̓���ɔC���܂��B
+        // 未選択のアイテムであれば、これ以上、とくに何もせず既定の動作に任せます。
         const comboItem = event.target.parentElement;
         if (comboItem.ariaSelected !== "true") return;
 
-        // ���������ɑI���ς݂̃A�C�e���ł���΁A�}�E�X�N���b�N�C�x���g�̓`�B���~�߂āA����̓�����L�����Z���B
-        // ���̑I���ς݃A�C�e�����I�����ꂽ�܂܂��ێ����܂��B
+        // もしも既に選択済みのアイテムであれば、マウスクリックイベントの伝達を止めて、既定の動作をキャンセル。
+        // この選択済みアイテムが選択されたままを維持します。
         event.stopPropagation();
 
-        // ����������łł́A�I�����̃h���b�v�_�E�����X�g���J�����ςȂ��ɂȂ�̂� (�}�E�X�N���b�N�C�x���g�̓`�B��j�~��������)�A
-        // ����Ɏ��O�� ESC �L�[������͋[���邱�ƂŁA�h���b�v�_�E�����X�g����܂��B
+        // ただしこれででは、選択肢のドロップダウンリストが開きっぱなしになるので (マウスクリックイベントの伝達を阻止したため)、
+        // 代わりに自前で ESC キー押下を模擬することで、ドロップダウンリストを閉じます。
         const keyEvent = new KeyboardEvent("keydown", { bubbles: true, cancelable: true, key: "Escape", code: "Escape" });
         event.target.dispatchEvent(keyEvent);
     };
 
     igRegisterScript("comboItemTemplate", (context) => {
 
-        // �܂��͕��ʂɃR���{�{�b�N�X�̃A�C�e���v�f���쐬���܂��B
-        // �Ȃ��A���̃T���v���v���O�����ł́A"Name" �Ƃ����v���p�e�B��\���Ɏg���Ă��܂��B
-        // �K�X�����g�̃v���O�����ɍ����ĎQ�Ƃ���v���p�e�B����ύX���Ă��������B
+        // まずは普通にコンボボックスのアイテム要素を作成します。
+        // なお、このサンプルプログラムでは、"Name" というプロパティを表示に使っています。
+        // 適宜ご自身のプログラムに合せて参照するプロパティ名を変更してください。
         const contentElement = document.createElement("div");
         contentElement.textContent = context.item.Name;
 
-        // ����ɉ����āA���̃R���{�{�b�N�X�A�C�e���̃N���b�N�C�x���g��ߑ����邽�߂́A
-        // �R���{�{�b�N�X�A�C�e���S�ʂ𕢂��}�X�N�v�f���쐬���A�N���b�N�C�x���g�n���h����o�^���܂��B
+        // さらに加えて、このコンボボックスアイテムのクリックイベントを捕捉するための、
+        // コンボボックスアイテム全面を覆うマスク要素を作成し、クリックイベントハンドラを登録します。
         const maskElement = document.createElement("div");
         maskElement.style.position = "absolute";
         maskElement.style.inset = 0;
         maskElement.addEventListener("click", comboItemClickHandler, true);
 
-        // ���̂悤�ɍ쐬�����v�f x 2��z��ɂ��ĕԂ��܂��B
+        // このように作成した要素 x 2つを配列にして返します。
         return [contentElement, maskElement];
     }, false);
 })();
