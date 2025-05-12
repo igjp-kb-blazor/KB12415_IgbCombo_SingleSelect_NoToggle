@@ -8,7 +8,7 @@
 
         // 未選択のアイテムであれば、これ以上、とくに何もせず既定の動作に任せます。
         const comboItem = event.target.parentElement;
-        if (comboItem.ariaSelected !== "true") return;
+        if ((comboItem.ariaSelected || comboItem.selected)?.toString() !== "true") return;
 
         // もしも既に選択済みのアイテムであれば、マウスクリックイベントの伝達を止めて、既定の動作をキャンセル。
         // この選択済みアイテムが選択されたままを維持します。
